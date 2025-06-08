@@ -1,56 +1,91 @@
 // 4. Route protection using React Router DOM
 // /client/src/App.jsx
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import Home from "./pages/Home";
-import Order from "./pages/Order";
-import Inventory from "./pages/Inventory";
+import { lazy, Suspense } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+
 import PrivateRoute from "./components/common/PrivateRoute";
-import GoogleCallback from "./components/oauth/GoogleCallback";
-import AuthRedirect from "./components/oauth/AuthRedirect";
+import Layout from "./components/common/Layout";
+
+const Login = lazy(() => import("./pages/Login"));
+const Signup = lazy(() => import("./pages/Signup"));
+const Home = lazy(() => import("./pages/Home"));
+const Order = lazy(() => import("./pages/Order"));
+const Inventory = lazy(() => import("./pages/Inventory"));
+const GoogleCallback = lazy(() => import("./components/oauth/GoogleCallback"));
+const AuthRedirect = lazy(() => import("./components/oauth/AuthRedirect"));
 
 export default function App() {
   return (
     <>
-      <Router>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/auth/google/callback" element={<GoogleCallback />} />
-          <Route path="/auth/redirect" element={<AuthRedirect />} />
-          <Route
-            path="/"
-            element={
-              <PrivateRoute>
-                <Home />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/order"
-            element={
-              <PrivateRoute>
-                <Order />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/inventory"
-            element={
-              <PrivateRoute>
-                <Inventory />
-              </PrivateRoute>
-            }
-          />
-        </Routes>
-      </Router>
+      <Layout>
+        <Router>
+          <Routes>
+            <Route
+              path="/login"
+              element={
+                <Suspense key="login" fallback={<>loading ui...</>}>
+                  <Login />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/signup"
+              element={
+                <Suspense key="signup" fallback={<>loading ui...</>}>
+                  <Signup />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/auth/google/callback"
+              element={
+                <Suspense key="google-callback" fallback={<>loading ui...</>}>
+                  <GoogleCallback />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/auth/redirect"
+              element={
+                <Suspense key="auth-redirect" fallback={<>loading ui...</>}>
+                  <AuthRedirect />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/"
+              element={
+                <PrivateRoute>
+                  <Suspense key="home" fallback={<>loading ui...</>}>
+                    <Home />
+                  </Suspense>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/order"
+              element={
+                <PrivateRoute>
+                  <Suspense key="order" fallback={<>loading ui...</>}>
+                    <Order />
+                  </Suspense>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/inventory"
+              element={
+                <PrivateRoute>
+                  <Suspense key="inventory" fallback={<>loading ui...</>}>
+                    <Inventory />
+                  </Suspense>
+                </PrivateRoute>
+              }
+            />
+          </Routes>
+        </Router>
+      </Layout>
       <ToastContainer
         position="top-right"
         autoClose={3000}

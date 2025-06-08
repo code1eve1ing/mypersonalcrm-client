@@ -31,11 +31,7 @@ function PrivateRoute({ children }) {
   }, [token, setUser]);
 
   if (isValidating) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        loading... {/* Replace with your spinner */}
-      </div>
-    );
+    return <>getting details... {/* Replace with your spinner */}</>;
   }
 
   return isAuthenticated ? children : <Navigate to="/login" replace />;

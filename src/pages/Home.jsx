@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+
 const Home = () => {
   const navigate = useNavigate();
   const handleClick = () => {
@@ -7,9 +8,9 @@ const Home = () => {
     navigate("/login");
   };
   return (
-    <div>
+    <>
       Home <button onClick={handleClick}>logout</button>
-    </div>
+    </>
   );
 };
 
