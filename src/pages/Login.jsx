@@ -18,6 +18,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { Label } from "../components/ui/label";
 import { motion } from "framer-motion";
+import { useEffect } from "react";
 
 // Validation schema
 const loginSchema = z.object({
@@ -53,9 +54,50 @@ export default function Login() {
     }
   };
 
-  const handleGoogleLogin = () => {
-    window.location.href = `${import.meta.env.VITE_API_BASE_URL}/auth/google`;
+  const handleGoogleLogin = async () => {
+    try {
+      // Open Google auth in a popup
+      const width = 500;
+      const height = 600;
+      const left = window.screen.width / 2 - width / 2;
+      const top = window.screen.height / 2 - height / 2;
+
+      const popup = window.open(
+        `${import.meta.env.VITE_API_BASE_URL}/auth/google`,
+        "GoogleAuth",
+        `width=${width},height=${height},top=${top},left=${left}`
+      );
+
+      // Listen for message from popup
+      const messageListener = (event) => {
+        if (event.origin !== window.location.origin) return;
+
+        if (event.data.type === "GOOGLE_AUTH_SUCCESS") {
+          setUser(event.data.user);
+          setToken(event.data.token);
+          localStorage.setItem("token", event.data.token);
+          toast.success("Google login successful!");
+          navigate("/");
+          popup?.close();
+          window.removeEventListener("message", messageListener);
+        } else if (event.data.type === "GOOGLE_AUTH_ERROR") {
+          toast.error(event.data.message || "Google login failed");
+          popup?.close();
+          window.removeEventListener("message", messageListener);
+        }
+      };
+
+      window.addEventListener("message", messageListener);
+    } catch (err) {
+      toast.error("Failed to initiate Google login");
+    }
   };
+
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      navigate("/");
+    }
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">

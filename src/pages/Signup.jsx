@@ -24,6 +24,7 @@ import { Label } from "../components/ui/label";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { motion } from "framer-motion";
+import { useEffect } from "react";
 
 // Define validation schema with Zod
 const signupSchema = z.object({
@@ -62,7 +63,6 @@ export default function Signup() {
   const onSubmit = async (data) => {
     try {
       const res = await api.post("/auth/signup", data);
-      console.log("res.data", res.data);
       setUser(res.data.user);
       setToken(res.data.token);
       localStorage.setItem("token", res.data.token);
@@ -74,6 +74,12 @@ export default function Signup() {
       );
     }
   };
+
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      navigate("/");
+    }
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">

@@ -13,6 +13,7 @@ import Order from "./pages/Order";
 import Inventory from "./pages/Inventory";
 import { ToastContainer } from "react-toastify";
 import PrivateRoute from "./components/common/PrivateRoute";
+import GoogleCallback from "./components/oauth/GoogleCallback";
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/auth/google/callback" element={<GoogleCallback />} />
           <Route
             path="/"
             element={
