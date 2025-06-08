@@ -64,10 +64,10 @@ export default function App() {
               }
             />
             <Route
-              path="/order"
+              path="/orders"
               element={
                 <PrivateRoute>
-                  <Suspense key="order" fallback={<>loading ui...</>}>
+                  <Suspense key="orders" fallback={<>loading ui...</>}>
                     <Order />
                   </Suspense>
                 </PrivateRoute>

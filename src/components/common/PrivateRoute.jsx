@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import api from "../../services/api";
 import { useAuthStore } from "../../store/authStore";
+import Sidebar from "./Sidebar";
 
 function PrivateRoute({ children }) {
   const [isValidating, setIsValidating] = useState(true);
@@ -34,7 +35,14 @@ function PrivateRoute({ children }) {
     return <>getting details... {/* Replace with your spinner */}</>;
   }
 
-  return isAuthenticated ? children : <Navigate to="/login" replace />;
+  return isAuthenticated ? (
+    <>
+      <Sidebar />
+      {children}
+    </>
+  ) : (
+    <Navigate to="/login" replace />
+  );
 }
 
 export default PrivateRoute;
