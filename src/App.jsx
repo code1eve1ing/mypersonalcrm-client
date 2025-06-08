@@ -14,6 +14,7 @@ import Inventory from "./pages/Inventory";
 import { ToastContainer } from "react-toastify";
 import PrivateRoute from "./components/common/PrivateRoute";
 import GoogleCallback from "./components/oauth/GoogleCallback";
+import AuthRedirect from "./components/oauth/AuthRedirect";
 
 export default function App() {
   return (
@@ -23,6 +24,7 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/auth/google/callback" element={<GoogleCallback />} />
+          <Route path="/auth/redirect" element={<AuthRedirect />} />
           <Route
             path="/"
             element={
