@@ -28,9 +28,9 @@ const Sidebar = () => {
           variant="outline"
           size="icon"
           onClick={() => setIsOpen(true)}
-          className={`${isOpen ? "hidden" : "block"} shadow-md bg-white `}
+          className={`shadow-md bg-white `}
         >
-          <Menu className="h-5 w-5 text-gray-700 ml-[0.55rem]" />
+          <Menu className="h-5 w-5 text-gray-700" />
         </Button>
       </motion.div>
 

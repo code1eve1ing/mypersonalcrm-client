@@ -1,5 +1,18 @@
+import PageLayout from "/src/components/common/PageLayout";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+
+export const Header = () => {
+  return <div>Header</div>;
+};
+
+export const Main = () => {
+  return <div>Main</div>;
+};
+
+export const Footer = () => {
+  return <div>Footer</div>;
+};
 
 const Home = () => {
   const navigate = useNavigate();
@@ -9,7 +22,7 @@ const Home = () => {
   };
   return (
     <>
-      Home <button onClick={handleClick}>logout</button>
+      <PageLayout main={Main} footer={Footer} header={Header} />
     </>
   );
 };
