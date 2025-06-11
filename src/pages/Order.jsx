@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Package } from "lucide-react";
 import { Input } from "/src/components/ui/input";
+import { useItemStore } from "/src/store/itemStore";
 
 export const Header = () => {
   return <div>Orders</div>;
@@ -93,9 +94,9 @@ const Order = () => {
     localStorage.removeItem("token");
     navigate("/login");
   };
-
+  const globalItems = useItemStore((s) => s.items);
   const newItem = { name: "", buy: "", sell: "", new: true };
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState(globalItems);
 
   const onCreateNewItem = () => {
     setItems((v) => [newItem, ...v]);
