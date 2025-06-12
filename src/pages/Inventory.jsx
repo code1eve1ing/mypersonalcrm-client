@@ -1,151 +1,159 @@
-import { Button } from "/src/components/ui/button";
-import PageLayout from "/src/components/common/PageLayout";
-import React, { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { Package, Save } from "lucide-react";
+import { useRef, useState } from "react";
 import { Input } from "/src/components/ui/input";
-import { bulkSave } from "/src/services/itemService";
-import { useItemStore } from "/src/store/itemStore";
+import { Plus, PackagePlus, Search } from "lucide-react";
+import { motion } from "framer-motion";
 
-export const Header = () => {
-  return <div>Inventory</div>;
-};
-
-export const Main = ({ items, setItems }) => {
-  if (items?.length === 0) {
-    return <>No items added</>;
-  }
-
-  const handleChange = (index, field, value) => {
-    const updatedItems = [...items];
-    updatedItems[index] = {
-      ...updatedItems[index],
-      update: "true",
-      [field]:
-        field === "buy" || field === "sell" ? parseFloat(value) || 0 : value,
-    };
-    setItems(updatedItems);
-  };
-
-  return (
-    <div className="flex flex-col gap-1">
-      <div className="flex gap-1">
-        <div className=" flex-1 px-3 text-sm">Item</div>
-        <div className="w-12 text-center text-sm">Buy</div>
-        <div className="w-12 text-center text-sm">Sell</div>
-      </div>
-      {items.map((item, index) => (
-        <div className="flex gap-1" key={index}>
-          <Input
-            placeholder="Product name"
-            value={item.name}
-            className="border-gray-100"
-            onChange={(e) => handleChange(index, "name", e.target.value)}
-          />
-          <Input
-            placeholder="0.00"
-            type="number"
-            value={item.buy}
-            className="w-12 px-1 text-center border-gray-100 text-red-400"
-            onChange={(e) => handleChange(index, "buy", e.target.value)}
-          />
-          <Input
-            placeholder="0.00"
-            type="number"
-            value={item.sell}
-            className="w-12 px-1 text-center border-gray-100 text-green-600"
-            onChange={(e) => handleChange(index, "sell", e.target.value)}
-          />
-        </div>
-      ))}
-    </div>
-  );
-};
-
-export const Footer = ({ handleCreateNewItem, handleSave }) => {
-  return (
-    <>
-      <Button
-        variant="ghost"
-        onClick={handleCreateNewItem}
-        className="w-full flex items-center gap-3 px-4 py-2 rounded-lg border border-indigo-200 hover:bg-gray-50 hover:text-indigo-600 mr-2"
-      >
-        {/* <Icon className="h-5 w-5" /> */}
-        <Package />
-        Create New Item
-      </Button>
-      {/* TODO: create common component for dif types of button on screen, no sidebar */}
-      {/* // TODO: if there are updated items show glowing save button  */}
-      <Button
-        variant="outline"
-        onClick={handleSave}
-        className="w-[33%] flex items-center gap-3 px-4 py-2 rounded-lg border border-indigo-600 hover:bg-transparent bg-transparent text-indigo-600 hover:text-indigo-600"
-      >
-        {/* <Icon className="h-5 w-5" /> */}
-        <Save />
-        Save
-      </Button>
-      {/* <div className="text-center ml-6 mr-3">
-        <span className="underline text-indigo-600">Categories</span>
-      </div> */}
-    </>
-  );
-};
-
+// TODO :remove react-icons
+// TODO: move sidebar to private component,in inventory
 const Inventory = () => {
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const globalItems = useItemStore((s) => s.items);
-  const setItemsGlobally = useItemStore((s) => s.setItems);
+  const inputRef = useRef(null);
+  const titleRef = useRef(null);
+  const [isOpen, setIsOpen] = useState(false);
 
-  const newItem = { name: "", buy: "", sell: "", new: true };
-  const [items, setItems] = useState(globalItems);
-
-  const onCreateNewItem = () => {
-    setItems((v) => [newItem, ...v]);
+  const onSearch = () => {
+    titleRef.current.classList.add("animate-shrinkFade");
+    setIsOpen(true);
+    // inputRef.current.classList.add("animate-appearFromRight");
+    inputRef.current.focus();
   };
 
-  const handleSave = async () => {
-    // TODO: proper error handling
-    const newItems = items
-      .filter((item) => item.new && item.name)
-      .map((item) => ({ name: item.name, buy: item.buy, sell: item.sell }));
-    const updatedItems = items
-      .filter((item) => item.update && !item.new)
-      .map((item) => ({
-        _id: item._id,
-        name: item.name,
-        buy: item.buy,
-        sell: item.sell,
-      }));
-    const savedItems = await bulkSave({ new: newItems, update: updatedItems });
-    setItemsGlobally(savedItems);
+  const onCancel = () => {
+    titleRef.current.classList.remove("animate-shrinkFade");
+    setIsOpen(false);
+    inputRef.current.blur();
   };
 
-  useEffect(() => {
-    const createItem = searchParams.get("create-item");
-    if (createItem) {
-      setItems((v) => [newItem, ...v]);
-    }
-  }, []);
-
-  useEffect(() => {
-    setItems(globalItems);
-  }, [globalItems]);
+  const items = [
+    { name: "Bhakhari", buy: 10, sell: 20 },
+    { name: "Dal Makhani", buy: 40, sell: 70 },
+    { name: "Tava Roti", buy: 1022, sell: 1542 },
+    { name: "Mag Nu Shak", buy: 20, sell: 40 },
+    { name: "Bhakhari", buy: 10, sell: 20 },
+    { name: "Dal Makhani", buy: 40, sell: 70 },
+    { name: "Tava Roti", buy: 1022, sell: 1542 },
+    { name: "Mag Nu Shak", buy: 20, sell: 40 },
+    { name: "Bhakhari", buy: 10, sell: 20 },
+    { name: "Dal Makhani", buy: 40, sell: 70 },
+    { name: "Tava Roti", buy: 1022, sell: 1542 },
+    { name: "Mag Nu Shak", buy: 20, sell: 40 },
+    { name: "Bhakhari", buy: 10, sell: 20 },
+    { name: "Dal Makhani", buy: 40, sell: 70 },
+    { name: "Tava Roti", buy: 1022, sell: 1542 },
+    { name: "Mag Nu Shak", buy: 20, sell: 40 },
+    { name: "Bhakhari", buy: 10, sell: 20 },
+    { name: "Dal Makhani", buy: 40, sell: 70 },
+    { name: "Tava Roti", buy: 1022, sell: 1542 },
+    { name: "Mag Nu Shak", buy: 20, sell: 40 },
+    { name: "Bhakhari", buy: 10, sell: 20 },
+    { name: "Dal Makhani", buy: 40, sell: 70 },
+    { name: "Tava Roti", buy: 1022, sell: 1542 },
+    { name: "Mag Nu Shak", buy: 20, sell: 40 },
+    { name: "Bhakhari", buy: 10, sell: 20 },
+    { name: "Dal Makhani", buy: 40, sell: 70 },
+    { name: "Tava Roti", buy: 1022, sell: 1542 },
+    { name: "Mag Nu Shak", buy: 20, sell: 40 },
+    { name: "Bhakhari", buy: 10, sell: 20 },
+    { name: "Dal Makhani", buy: 40, sell: 70 },
+    { name: "Tava Roti", buy: 1022, sell: 1542 },
+    { name: "Mag Nu Shak", buy: 20, sell: 40 },
+    { name: "Bhakhari", buy: 10, sell: 20 },
+    { name: "Dal Makhani", buy: 40, sell: 70 },
+    { name: "Tava Roti", buy: 1022, sell: 1542 },
+    { name: "Mag Nu Shak", buy: 20, sell: 40 },
+    { name: "Bhakhari", buy: 10, sell: 20 },
+    { name: "Dal Makhani", buy: 40, sell: 70 },
+    { name: "Tava Roti", buy: 1022, sell: 1542 },
+    { name: "Mag Nu Shak", buy: 20, sell: 40 },
+    { name: "Bhakhari", buy: 10, sell: 20 },
+    { name: "Dal Makhani", buy: 40, sell: 70 },
+    { name: "Tava Roti", buy: 1022, sell: 1542 },
+    { name: "Mag Nu Shak", buy: 20, sell: 40 },
+    { name: "Bhakhari", buy: 10, sell: 20 },
+    { name: "Dal Makhani", buy: 40, sell: 70 },
+    { name: "Tava Roti", buy: 1022, sell: 1542 },
+    { name: "Mag Nu Shak", buy: 20, sell: 40 },
+    { name: "Bhakhari", buy: 10, sell: 20 },
+    { name: "Dal Makhani", buy: 40, sell: 70 },
+    { name: "Tava Roti", buy: 1022, sell: 1542 },
+    { name: "Mag Nu Shak", buy: 20, sell: 40 },
+  ];
 
   return (
-    <>
-      <PageLayout
-        main={<Main items={items} setItems={setItems} />}
-        footer={
-          <Footer
-            handleCreateNewItem={onCreateNewItem}
-            handleSave={handleSave}
-          />
-        }
-        header={<Header />}
-      />
-    </>
+    <div className="absolute top-1 right-1 left-1 bottom-1 bg-white">
+      <header className="py-4 pl-16 pr-4 flex justify-between items-center">
+        <h1 ref={titleRef} className="text-xl font-semibold tracking-widest">
+          Inventory
+        </h1>
+        <div className="flex gap-4 relative">
+          <motion.div
+            initial={false}
+            animate={{ x: !isOpen ? -360 : 0 }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            className="fixed top-4 left-4 z-50 bg-white pb-2"
+          >
+            <Input
+              ref={inputRef}
+              placeholder="Search..."
+              className="w-[calc(100dvw-110px)]"
+            />
+          </motion.div>
+          <motion.div
+            initial={false}
+            animate={{ x: isOpen ? 40 : 0 }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          >
+            <Search
+              onClick={onSearch}
+              size={18}
+              className="cursor-pointer mr-1"
+            />
+          </motion.div>
+          <motion.div
+            initial={false}
+            animate={{ x: isOpen ? 40 : 0, opacity: isOpen ? 0 : 1 }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          >
+            <PackagePlus size={18} className="cursor-pointer" />
+          </motion.div>
+          <motion.div
+            initial={false}
+            animate={{ rotate: isOpen ? 45 : 0 }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          >
+            <Plus
+              size={18}
+              className="cursor-pointer"
+              onClick={() => {
+                isOpen ? onCancel() : null;
+              }}
+            />
+          </motion.div>
+        </div>
+      </header>
+      <main className="mx-2 overflow-auto max-h-[calc(100dvh-130px)]">
+        <div className="flex gap-2 font-semibold tracking-wide text-gray-600 mb-1">
+          <span className="flex-1">Product Name</span>
+          <span className="w-[45px] text-center">Buy</span>
+          <span className="w-[45px] text-center">Sell</span>
+        </div>
+        {items.map((item) => (
+          <div key={item.name} className="flex gap-2">
+            <Input
+              className="p-0 m-0 rounded-none focus:outline-none focus:ring-0 border-none focus-visible::outline-none focus-visible:ring-0"
+              value={item.name}
+            />
+            <Input
+              className="p-0 m-0 w-[45px] text-center rounded-none focus:outline-none focus:ring-0 border-none focus-visible::outline-none focus-visible:ring-0"
+              value={item.buy}
+            />
+            <Input
+              className="p-0 m-0 w-[45px] text-center rounded-none focus:outline-none focus:ring-0 border-none focus-visible::outline-none focus-visible:ring-0"
+              value={item.sell}
+            />
+          </div>
+        ))}
+      </main>
+    </div>
   );
 };
 
