@@ -16,6 +16,11 @@ const GoogleCallback = lazy(() => import("./components/oauth/GoogleCallback"));
 const AuthRedirect = lazy(() => import("./components/oauth/AuthRedirect"));
 
 export default function App() {
+  const Fallback = (
+    <span className="fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
+      loading ui...
+    </span>
+  );
   return (
     <>
       <Layout>
@@ -24,7 +29,7 @@ export default function App() {
             <Route
               path="/login"
               element={
-                <Suspense key="login" fallback={<>loading ui...</>}>
+                <Suspense key="login" fallback={Fallback}>
                   <Login />
                 </Suspense>
               }
@@ -32,7 +37,7 @@ export default function App() {
             <Route
               path="/signup"
               element={
-                <Suspense key="signup" fallback={<>loading ui...</>}>
+                <Suspense key="signup" fallback={Fallback}>
                   <Signup />
                 </Suspense>
               }
@@ -40,7 +45,7 @@ export default function App() {
             <Route
               path="/auth/google/callback"
               element={
-                <Suspense key="google-callback" fallback={<>loading ui...</>}>
+                <Suspense key="google-callback" fallback={Fallback}>
                   <GoogleCallback />
                 </Suspense>
               }
@@ -48,7 +53,7 @@ export default function App() {
             <Route
               path="/auth/redirect"
               element={
-                <Suspense key="auth-redirect" fallback={<>loading ui...</>}>
+                <Suspense key="auth-redirect" fallback={Fallback}>
                   <AuthRedirect />
                 </Suspense>
               }
@@ -57,7 +62,7 @@ export default function App() {
               path="/"
               element={
                 <PrivateRoute>
-                  <Suspense key="home" fallback={<>loading ui...</>}>
+                  <Suspense key="home" fallback={Fallback}>
                     <Home />
                   </Suspense>
                 </PrivateRoute>
@@ -67,7 +72,7 @@ export default function App() {
               path="/orders"
               element={
                 <PrivateRoute>
-                  <Suspense key="orders" fallback={<>loading ui...</>}>
+                  <Suspense key="orders" fallback={Fallback}>
                     <Order />
                   </Suspense>
                 </PrivateRoute>
@@ -77,7 +82,7 @@ export default function App() {
               path="/inventory"
               element={
                 <PrivateRoute>
-                  <Suspense key="inventory" fallback={<>loading ui...</>}>
+                  <Suspense key="inventory" fallback={Fallback}>
                     <Inventory />
                   </Suspense>
                 </PrivateRoute>

@@ -38,13 +38,19 @@ function PrivateRoute({ children }) {
   }, [token, setUser]);
 
   if (isValidating) {
-    return <>getting details... {/* Replace with your spinner */}</>;
+    return (
+      <span className="fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
+        getting details... {/* Replace with your spinner */}
+      </span>
+    );
   }
 
   return isAuthenticated ? (
     <>
       <Sidebar />
-      {children}
+      <div className="absolute top-1 right-1 left-1 bottom-1 bg-white/80 backdrop-blur-3xl border border-white rounded-sm flex flex-col gap-4 safe-padding">
+        {children}
+      </div>
     </>
   ) : (
     <Navigate to="/login" replace />

@@ -1,26 +1,30 @@
 import { useRef, useState } from "react";
 import { Input } from "/src/components/ui/input";
-import { Plus, PackagePlus, Search } from "lucide-react";
+import { Plus, SlidersHorizontal, Search } from "lucide-react";
 import { motion } from "framer-motion";
+import { useWidgetStore } from "/src/store/widgetStore";
 
 // TODO :remove react-icons
 // TODO: move sidebar to private component,in inventory
 const Inventory = () => {
+  const { setShowSidebarIcon, showSidebarIcon } = useWidgetStore();
   const inputRef = useRef(null);
   const titleRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
 
-  const onSearch = () => {
-    titleRef.current.classList.add("animate-shrinkFade");
+  // TODO: use motion animation
+  const onSearch = async () => {
+    setShowSidebarIcon(false);
+    await new Promise((res) => setTimeout(res, 500));
     setIsOpen(true);
-    // inputRef.current.classList.add("animate-appearFromRight");
     inputRef.current.focus();
   };
 
-  const onCancel = () => {
-    titleRef.current.classList.remove("animate-shrinkFade");
-    setIsOpen(false);
+  const onCancel = async () => {
     inputRef.current.blur();
+    setIsOpen(false);
+    await new Promise((res) => setTimeout(res, 500));
+    setShowSidebarIcon(true);
   };
 
   const items = [
@@ -79,22 +83,32 @@ const Inventory = () => {
   ];
 
   return (
-    <div className="absolute top-1 right-1 left-1 bottom-1 bg-white">
-      <header className="py-4 pl-16 pr-4 flex justify-between items-center">
-        <h1 ref={titleRef} className="text-xl font-semibold tracking-widest">
-          Inventory
-        </h1>
-        <div className="flex gap-4 relative">
+    <>
+      <header className="mt-3.5  pl-16 pr-4 flex justify-between items-center">
+        <motion.div
+          initial={false}
+          animate={{
+            opacity: showSidebarIcon ? 1 : 0,
+            scale: showSidebarIcon ? 1 : 0.7,
+          }}
+          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          className=""
+        >
+          <h1 ref={titleRef} className="text-xl font-semibold tracking-widest">
+            Inventory
+          </h1>
+        </motion.div>
+        <div className="flex gap-4 relative top-[2px]">
           <motion.div
             initial={false}
-            animate={{ x: !isOpen ? -360 : 0 }}
+            animate={{ x: !isOpen ? -360 : 0, opacity: isOpen ? 1 : 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="fixed top-4 left-4 z-50 bg-white pb-2"
+            className="fixed top-4 left-3 z-50 "
           >
             <Input
               ref={inputRef}
               placeholder="Search..."
-              className="w-[calc(100dvw-110px)]"
+              className="m-0 w-[calc(100dvw-110px)] relative bottom-[4px] bg-white/60 focus-visible:ring-white focus-visible:border-none"
             />
           </motion.div>
           <motion.div
@@ -113,7 +127,7 @@ const Inventory = () => {
             animate={{ x: isOpen ? 40 : 0, opacity: isOpen ? 0 : 1 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
           >
-            <PackagePlus size={18} className="cursor-pointer" />
+            <SlidersHorizontal size={18} className="cursor-pointer" />
           </motion.div>
           <motion.div
             initial={false}
@@ -130,7 +144,7 @@ const Inventory = () => {
           </motion.div>
         </div>
       </header>
-      <main className="mx-2 overflow-auto max-h-[calc(100dvh-130px)]">
+      <main className="mx-2 overflow-auto flex-1">
         <div className="flex gap-2 font-semibold tracking-wide text-gray-600 mb-1">
           <span className="flex-1">Product Name</span>
           <span className="w-[45px] text-center">Buy</span>
@@ -153,7 +167,7 @@ const Inventory = () => {
           </div>
         ))}
       </main>
-    </div>
+    </>
   );
 };
 

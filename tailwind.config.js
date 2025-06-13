@@ -4,20 +4,6 @@ export default {
 	content: ["./index.html", "./src/**/*.{ts,tsx,js,jsx}"],
 	theme: {
 		extend: {
-			keyframes: {
-				shrinkFade: {
-					'0%': { transform: 'scale(1)', opacity: '1' },
-					'100%': { transform: 'scale(0.5)', opacity: '0' },
-				},
-				appearFromRight: {
-					'0%': { transform: 'translateX(20px)', opacity: '0' },
-					'100%': { transform: 'translateX(0)', opacity: '1' },
-				},
-			},
-			animation: {
-				shrinkFade: 'shrinkFade 0.5s ease-in-out forwards',
-				appearFromRight: 'appearFromRight 0.5s ease-in-out forwards',
-			},
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
@@ -67,5 +53,16 @@ export default {
 			}
 		}
 	},
-	plugins: [require("tailwindcss-animate")],
+	plugins: [
+		function ({ addUtilities }) {
+			addUtilities({
+				'.safe-padding': {
+					'padding-top': 'calc(env(safe-area-inset-top))',
+					'padding-bottom': 'calc(env(safe-area-inset-bottom) + 1rem)',
+					'padding-left': 'env(safe-area-inset-left)',
+					'padding-right': 'env(safe-area-inset-right)',
+				},
+			})
+		},
+		require("tailwindcss-animate")],
 }
