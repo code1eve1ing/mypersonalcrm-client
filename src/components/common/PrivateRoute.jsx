@@ -3,14 +3,11 @@ import { Navigate } from "react-router-dom";
 import api from "../../services/api";
 import { useAuthStore } from "../../store/authStore";
 import Sidebar from "./Sidebar";
-import { getAllItems } from "/src/services/itemService";
-import { useItemStore } from "/src/store/itemStore";
 
 function PrivateRoute({ children }) {
   const [isValidating, setIsValidating] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const setUser = useAuthStore((state) => state.setUser);
-  const setItems = useItemStore((state) => state.setItems);
   const token = localStorage.getItem("token");
 
   useEffect(() => {
@@ -22,8 +19,7 @@ function PrivateRoute({ children }) {
         const response = await api.get("/users/me");
         setUser(response.data);
         // TODO: user promise.all if more apis to get...
-        const items = await getAllItems();
-        setItems(items);
+        // const items = await getAllItems();
         setIsAuthenticated(true);
       } catch (error) {
         console.error("Authentication error:", error);
